@@ -1,4 +1,5 @@
 "use client";
+import * as React from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -52,9 +53,9 @@ export function ProfileForm() {
               name="username"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Username</FormLabel>
+                  <FormLabel></FormLabel>
                   <FormControl>
-                    <Input placeholder="shadcn" {...field} />
+                    <Input placeholder="Username" {...field} />
                   </FormControl>
                   <FormDescription></FormDescription>
                   <FormMessage />
@@ -68,9 +69,9 @@ export function ProfileForm() {
               name="Password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Password</FormLabel>
+                  <FormLabel></FormLabel>
                   <FormControl>
-                    <Input placeholder="shadcn" {...field} />
+                    <Input placeholder="Password" {...field} />
                   </FormControl>
                   <FormDescription></FormDescription>
                   <FormMessage />
@@ -78,7 +79,7 @@ export function ProfileForm() {
               )}
             />
           </div>
-          <Button className="" type="submit">
+          <Button className="w-full" type="submit">
             Login{" "}
           </Button>
         </form>
