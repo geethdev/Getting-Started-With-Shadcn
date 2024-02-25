@@ -17,8 +17,12 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
+//import { signInStart, signInSuccess, signInFailure } from './actions'; // Import your action creators
+//import { navigate } from 'gatsby'; // Import navigate if you're using Gatsby
+//import { formSchema } from './formSchema'; // Import your form schema
+
 const formSchema = z.object({
-  username: z.string().min(2, {
+  startupName: z.string().min(2, {
     message: "Username must be at least 2 characters.",
   }),
   Password: z.string().min(2, {
@@ -31,15 +35,40 @@ export function ProfileForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      username: "",
+      startupName: "",
     },
   });
 
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
+
+    try {
+      const res = await fetch("/auth/signin", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+      });
+      const data = await res.json();
+      console.log(data);
+      if (res.status !== 200) {
+        // Dispatch sign-in failure action with error message
+        // Assuming dispatch is accessible in this scope
+        // Replace with actual dispatch call if this is within a Redux thunk or similar
+        //dispatch(signInFailure(data.message));
+        return;
+      }
+      // Dispatch sign-in success action with data
+      // Replace with actual dispatch call if this is within a Redux thunk or similar
+      //dispatch(signInSuccess(data));
+      //navigate("/"); // Navigate to desired location
+    } catch (error) {
+      // Dispatch sign-in failure action with error message
+      // Replace with actual dispatch call if this is within a Redux thunk or similar
+      //dispatch(signInFailure(error.message));
+    }
   }
 
   return (
@@ -50,7 +79,7 @@ export function ProfileForm() {
           <div>
             <FormField
               control={form.control}
-              name="username"
+              name="startupName"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel></FormLabel>

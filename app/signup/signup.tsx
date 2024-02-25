@@ -80,8 +80,6 @@ export function ProfileForm2() {
     verifyOtp: z.string().min(6, {
       message: "OTP must be at least 6 characters.",
     }),
-
-    additionalField: z.string().optional(),
   });
 
   // Define your form setup and submit handler here
@@ -94,11 +92,11 @@ export function ProfileForm2() {
       password: "",
       sendOtp: "",
       verifyOtp: "",
-      additionalField: "", // Added default value for the additional field
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    console.log(values);
     // If any required field is empty, prevent form submission
     if (
       !values.startupName ||
@@ -109,53 +107,47 @@ export function ProfileForm2() {
       return;
     }
 
+    console.log("Submitted1", values);
+
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     console.log(values);
     setIsSignUpClicked(true);
   }
 
+  const [startupName, setStartupName]= useState("");
+  const [email, setEmail]= useState("");
+  const [industry, setIndustry]= useState("");
+  const [password, setPassword]= useState("");
+  const [sendOtp, setSendOtp]= useState("");
+  
+  const handleOnChange= (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.target.name === "startupName" && setStartupName(e.target.value);
+    e.target.name === "email" && setEmail(e.target.value);
+    e.target.name === "industry" && setIndustry(e.target.value);
+    e.target.name === "password" && setPassword(e.target.value);
+    e.target.name === "sendOtp" && setSendOtp(e.target.value);
+  };
+
   return (
     <div className="max-w-sm p-3 mx-auto mt-20">
       <h1 className="text-2xl font-bold p-4 text-center">Sign Up</h1>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <div>
-            <FormField
-              control={form.control}
-              name="startupName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input
-                      placeholder="Startup Name"
-                      {...field}
-                      disabled={isSignUpClicked}
-                    />
-                  </FormControl>
-                  <FormMessage>{form.errors?.startupName?.message}</FormMessage>
-                </FormItem>
-              )}
-            />
-          </div>
-          {/* <div className=" ">
-            <FormField
-              control={form.control}
-              name="industry"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input
-                      placeholder="Industry"
-                      {...field}
-                      disabled={isSignUpClicked}
-                    />
-                  </FormControl>
-                  <FormMessage>{form.errors?.industry?.message}</FormMessage>
-                </FormItem>
-              )}
-            />
-          </div> */}
+          <FormField
+            control={form.control}
+            name="startupName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Startup Name</FormLabel>
+                <FormControl>
+                  <Input placeholder="Startup Name" {...field} />
+                </FormControl>
+                <FormDescription></FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
           <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
@@ -168,14 +160,14 @@ export function ProfileForm2() {
                 {value
                   ? frameworks.find((framework) => framework.value === value)
                       ?.label
-                  : "Select framework..."}
+                  : "Select Industry"}
                 <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-[200px] p-0">
               <Command>
                 <CommandInput
-                  placeholder="Search framework..."
+                  placeholder="Select Industry..."
                   className="h-9"
                 />
                 <CommandEmpty>No framework found.</CommandEmpty>
@@ -204,114 +196,90 @@ export function ProfileForm2() {
               </Command>
             </PopoverContent>
           </Popover>
-          <div className=" ">
-            <FormField
-              control={form.control}
-              name="sendOtp"
-              render={({ field }) => (
-                <FormItem>
-                  <div className="flex items-center">
-                    <FormControl>
-                      <Input
-                        type="text"
-                        placeholder="OTP"
-                        {...field}
-                        disabled={isSignUpClicked}
-                      />
-                    </FormControl>
-                    <Button
-                      className=""
-                      type="button"
-                      onClick={() => console.log("Send OTP")}
-                      disabled={isSignUpClicked}
-                    >
-                      Send OTP
-                    </Button>
-                  </div>
-                  <FormMessage>{form.errors?.email?.message}</FormMessage>
-                </FormItem>
-              )}
-            />
-          </div>
 
-          <div className=" ">
-            <FormField
-              control={form.control}
-              name="verifyOtp"
-              render={({ field }) => (
-                <FormItem>
-                  <div className="flex items-center">
-                    <FormControl>
-                      <Input
-                        type="text"
-                        placeholder="Verify OTP"
-                        {...field}
-                        disabled={isSignUpClicked}
-                      />
-                    </FormControl>
-                    <Button
-                      className=""
-                      type="button"
-                      onClick={() => console.log("Send OTP")}
-                      disabled={isSignUpClicked}
-                    >
-                      Verify OTP
-                    </Button>
-                  </div>
-                  <FormMessage>{form.errors?.email?.message}</FormMessage>
-                </FormItem>
-              )}
-            />
-          </div>
-
-          <div className=" ">
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email</FormLabel>
+                <div className="flex items-center">
                   <FormControl>
-                    <Input
-                      type="password"
-                      placeholder="Password"
-                      {...field}
-                      disabled={isSignUpClicked}
-                    />
+                    <Input placeholder="Email" {...field} />
                   </FormControl>
-                  <FormMessage>{form.errors?.password?.message}</FormMessage>
-                </FormItem>
-              )}
-            />
-          </div>
-          {isSignUpClicked && (
-            <div>
-              <FormField
-                control={form.control}
-                name="additionalField"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input placeholder="Additional Field" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-          )}
-          {isSignUpClicked ? (
-            <Button className="" type="submit">
-              Submit
-            </Button>
-          ) : (
-            <Button
-              className="w-full"
-              type="button"
-              onClick={() => setIsSignUpClicked(true)}
-            >
-              Sign Up
-            </Button>
-          )}
+                  <Button
+                    className="ml-2"
+                    type="button"
+                    onClick={() =>
+                      console.log({
+                        email: field.value,
+                        industry: value,
+                      })
+                    }
+                  >
+                    Send OTP
+                  </Button>
+                </div>
+                <FormDescription></FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="verifyOtp"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Verify OTP</FormLabel>
+                <div className="flex items-center">
+                  <FormControl>
+                    <Input placeholder="Verify OTP" {...field} />
+                  </FormControl>
+                  <Button
+                    className="ml-2"
+                    type="button"
+                    onClick={() => console.log("Verify OTP")}
+                  >
+                    Verify OTP
+                  </Button>
+                </div>
+                <FormDescription></FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Password</FormLabel>
+                <FormControl>
+                  <Input placeholder="Password" {...field} />
+                </FormControl>
+                <FormDescription></FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <Button
+            className="w-full"
+            type="submit"
+            onClick={() => {
+              console.log({
+                startupName: form.getValues("startupName"),
+                email: form.getValues("email"),
+                industry: value,
+                password: form.getValues("password"),
+                sendOtp: form.getValues("sendOtp"),
+              });
+            }}
+          >
+            Submit{" "}
+          </Button>
         </form>
       </Form>
     </div>
