@@ -22,7 +22,7 @@ import { Input } from "@/components/ui/input";
 //import { formSchema } from './formSchema'; // Import your form schema
 
 const formSchema = z.object({
-  username: z.string().min(2, {
+  startupName: z.string().min(2, {
     message: "Username must be at least 2 characters.",
   }),
   Password: z.string().min(2, {
@@ -35,7 +35,7 @@ export function ProfileForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      username: "",
+      startupName: "",
     },
   });
 
@@ -79,7 +79,7 @@ export function ProfileForm() {
           <div>
             <FormField
               control={form.control}
-              name="username"
+              name="startupName"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel></FormLabel>

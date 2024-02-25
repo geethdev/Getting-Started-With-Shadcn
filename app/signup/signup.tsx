@@ -80,8 +80,6 @@ export function ProfileForm2() {
     verifyOtp: z.string().min(6, {
       message: "OTP must be at least 6 characters.",
     }),
-
-    additionalField: z.string().optional(),
   });
 
   // Define your form setup and submit handler here
@@ -97,7 +95,8 @@ export function ProfileForm2() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    console.log(values);
     // If any required field is empty, prevent form submission
     if (
       !values.startupName ||
@@ -108,11 +107,27 @@ export function ProfileForm2() {
       return;
     }
 
+    console.log("Submitted1", values);
+
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     console.log(values);
     setIsSignUpClicked(true);
   }
+
+  const [startupName, setStartupName]= useState("");
+  const [email, setEmail]= useState("");
+  const [industry, setIndustry]= useState("");
+  const [password, setPassword]= useState("");
+  const [sendOtp, setSendOtp]= useState("");
+  
+  const handleOnChange= (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.target.name === "startupName" && setStartupName(e.target.value);
+    e.target.name === "email" && setEmail(e.target.value);
+    e.target.name === "industry" && setIndustry(e.target.value);
+    e.target.name === "password" && setPassword(e.target.value);
+    e.target.name === "sendOtp" && setSendOtp(e.target.value);
+  };
 
   return (
     <div className="max-w-sm p-3 mx-auto mt-20">
@@ -195,7 +210,12 @@ export function ProfileForm2() {
                   <Button
                     className="ml-2"
                     type="button"
-                    onClick={() => console.log("Send OTP")}
+                    onClick={() =>
+                      console.log({
+                        email: field.value,
+                        industry: value,
+                      })
+                    }
                   >
                     Send OTP
                   </Button>
@@ -208,20 +228,20 @@ export function ProfileForm2() {
 
           <FormField
             control={form.control}
-            name="startupName"
+            name="verifyOtp"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Verify OTP</FormLabel>
                 <div className="flex items-center">
                   <FormControl>
-                    <Input placeholder="Email" {...field} />
+                    <Input placeholder="Verify OTP" {...field} />
                   </FormControl>
                   <Button
                     className="ml-2"
                     type="button"
                     onClick={() => console.log("Verify OTP")}
                   >
-                    Send OTP
+                    Verify OTP
                   </Button>
                 </div>
                 <FormDescription></FormDescription>
@@ -245,8 +265,20 @@ export function ProfileForm2() {
             )}
           />
 
-          <Button className="w-full" type="submit">
-            Submit
+          <Button
+            className="w-full"
+            type="submit"
+            onClick={() => {
+              console.log({
+                startupName: form.getValues("startupName"),
+                email: form.getValues("email"),
+                industry: value,
+                password: form.getValues("password"),
+                sendOtp: form.getValues("sendOtp"),
+              });
+            }}
+          >
+            Submit{" "}
           </Button>
         </form>
       </Form>
